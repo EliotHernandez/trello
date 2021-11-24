@@ -1,0 +1,27 @@
+@import '../../assets/_scss/colors.scss';
+
+header {
+    display: flex;
+    background-color: $darkest;
+    color: $light;
+
+    a {
+        all: unset;
+        background-color: $lightest;
+        padding: 0.6em;
+        color: $dark;
+        cursor: pointer;
+        border-radius: 0.4em;
+        transition: all 0.4s;
+    }
+
+    a:hover {
+        background-color: $dark;
+        color: $light;
+    }
+
+    .headerTitle {
+        margin: 0.4em 0;
+    }
+
+}
