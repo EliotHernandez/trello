@@ -6,14 +6,8 @@ const Header = props => {
         <header>
             <div className="container-fluid">
                 <div className="row d-flex align-items-center">
-                    <div className="col-8 headerTitle">
+                    <div className="col-3 headerTitle">
                         <h2>React Tello</h2>
-                    </div>
-                    <div className="col-2 headerHome">
-                        <a href="/home"><span>Home</span></a>
-                    </div>
-                    <div className="col-2 headerTask">
-                        <a href="/task"><span>Crear Tarea</span></a>
                     </div>
                 </div>
             </div>
