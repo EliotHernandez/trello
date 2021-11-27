@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { v4 as uuidv4 } from 'uuid';
+import ListForm from "../listForm/ListForm";
+import TaskForm from '../taskForm/TaskForm';
 import './Lists.scss';
 
 
@@ -23,7 +25,7 @@ const tasksFromDoing = [
 ];
 
 const tasksFromDone = [
-    { id: uuidv4(), text: 'Tarea 10' }
+    { id: uuidv4(), text: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.' }
 ];
 
 const initialLists = {
@@ -93,6 +95,35 @@ const _draggAndDrop = (result, lists, setLists) => {
 const Lists = props => {
     const [lists, setLists] = useState(initialLists);
 
+    const handleNewTask = params => {
+
+        let list = lists[params.parentId];
+        let newTask = { id: uuidv4(), text: params.text };
+        list.tasks.push(newTask);
+
+        setLists({
+            ...lists,
+            [params.parentId]: {
+                ...list,
+                tasks: list.tasks
+            }
+        });
+    }
+
+    const handleNewList = params => {
+        setLists({
+            ...lists,
+            [uuidv4()]: {
+                title: params.text,
+                tasks: []
+            }
+        });
+    }
+
+    useEffect(() => {
+        //console.log(lists);
+    }, [lists]);
+
     return (
         <DragDropContext onDragEnd={(result) => _draggAndDrop(result, lists, setLists)}>
             <div className="container-fluid" >
@@ -107,18 +138,19 @@ const Lists = props => {
                                             return (
                                                 <Draggable draggableId={task.id} index={index} key={task.id}>
                                                     {(draggableProvided) => (
-                                                        <div {...draggableProvided.draggableProps} ref={draggableProvided.innerRef} {...draggableProvided.dragHandleProps} className="tasks" >{task.text}</div>
+                                                        <div {...draggableProvided.draggableProps} ref={draggableProvided.innerRef} {...draggableProvided.dragHandleProps} className="tasks" ><span>{task.text}</span></div>
                                                     )}
                                                 </Draggable>
                                             );
                                         })}
                                         {droppableProvided.placeholder}
-                                        <div className="addTasks">Añadir Tarea</div>
+                                        <TaskForm modifyParent={handleNewTask} parent={id} />
                                     </div>
                                 )}
                             </Droppable>
                         );
                     })}
+                    <ListForm modifyParent={handleNewList} />
                 </div>
             </div>
         </DragDropContext>

@@ -5,7 +5,7 @@ const Header = props => {
     return (
         <header>
             <div className="container-fluid">
-                <div className="row d-flex align-items-center">
+                <div className="row">
                     <div className="col-3 headerTitle">
                         <h2>React Tello</h2>
                     </div>

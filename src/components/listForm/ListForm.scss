@@ -1,0 +1,59 @@
+@import '../../assets/_scss/colors.scss';
+
+#addList {
+    padding: 0.5em;
+    margin: 0em;
+    height: auto !important;
+}
+
+#addList:hover {
+    background-color: $darkest;
+    color: $light;
+    transition: all 0.4s;
+    cursor: pointer;
+}
+
+.addLists {
+    padding: 0.6em;
+    margin: 0.5em 0.5em;
+    border-radius: 0.4em;
+    box-shadow: 0em 0.1em 0.2em $darkest;
+}
+
+.addLists:hover {
+    background-color: $darkest;
+    transition: all 0.4s;
+    cursor: pointer;
+}
+
+.addListForm {
+    background-color: $dark;
+    padding: 0.6em;
+    margin: 0em 0.5em;
+    border-radius: 0.4em;
+    box-shadow: 0em 0.1em 0.2em $darkest;
+
+    .listText {
+        margin-bottom: 0.2em;
+        margin-top: 0.5em;
+        border-radius: 0.2em;
+        width: 90%;
+    }
+
+    .formButton {
+        all: unset;
+        background-color: $solid;
+        padding: 0.2em 0.6em;
+        color: $lightest;
+        border-radius: 0.4em;
+        box-shadow: 0em 0.1em 0.2em $darkest;
+        margin: 0.3em 0.5em;
+    }
+
+    .formButton:hover {
+        background-color: $light;
+        color: $dark;
+        transition: all 0.4s;
+        cursor: pointer;
+    }
+}

@@ -28,16 +28,3 @@
     transition: all 0.4s;
     cursor: grab;
 }
-
-.addTasks {
-    padding: 0.6em;
-    margin: 0.5em 0.5em;
-    border-radius: 0.4em;
-    box-shadow: 0em 0.1em 0.2em $darkest;
-}
-
-.addTasks:hover {
-    background-color: $darkest;
-    transition: all 0.4s;
-    cursor: pointer;
-}
