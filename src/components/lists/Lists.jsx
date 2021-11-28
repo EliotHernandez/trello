@@ -7,25 +7,25 @@ import './Lists.scss';
 
 
 const tasksFromResource = [
-    { id: uuidv4(), text: 'Tarea 1' },
-    { id: uuidv4(), text: 'Tarea 2' },
-    { id: uuidv4(), text: 'Tarea 3' }
+    { id: uuidv4(), text: 'Tarea 1', isOpen: false },
+    { id: uuidv4(), text: 'Tarea 2', isOpen: false },
+    { id: uuidv4(), text: 'Tarea 3', isOpen: false }
 ];
 
 const tasksFromTodo = [
-    { id: uuidv4(), text: 'Tarea 4' },
-    { id: uuidv4(), text: 'Tarea 5' },
-    { id: uuidv4(), text: 'Tarea 6' },
-    { id: uuidv4(), text: 'Tarea 7' }
+    { id: uuidv4(), text: 'Tarea 4', isOpen: false },
+    { id: uuidv4(), text: 'Tarea 5', isOpen: false },
+    { id: uuidv4(), text: 'Tarea 6', isOpen: false },
+    { id: uuidv4(), text: 'Tarea 7', isOpen: false }
 ];
 
 const tasksFromDoing = [
-    { id: uuidv4(), text: 'Tarea 8' },
-    { id: uuidv4(), text: 'Tarea 9' }
+    { id: uuidv4(), text: 'Tarea 8', isOpen: false },
+    { id: uuidv4(), text: 'Tarea 9', isOpen: false }
 ];
 
 const tasksFromDone = [
-    { id: uuidv4(), text: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.' }
+    { id: uuidv4(), text: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', isOpen: false }
 ];
 
 const initialLists = {
@@ -100,6 +100,53 @@ const Lists = props => {
 
     const handleNewTask = params => {
 
+        if (params.taskId) {
+            
+            if (!params.text) {
+                let modifyList = lists[params.parentId];
+                let modifyTasks = [];
+                modifyList.tasks?.map(oldTask => {
+                    oldTask.isOpen = false;
+                    modifyTasks.push(oldTask)
+                    return modifyTasks;
+                });
+
+                setLists({
+                    ...lists,
+                    [params.parentId]: {
+                        ...modifyList,
+                        tasks: modifyTasks
+                    }
+                });
+                return;
+            }
+
+            let modifyList = lists[params.parentId];
+            let modifyTasks = [];
+            modifyList.tasks?.map(oldTask => {
+                if (oldTask.id === params.taskId) {
+                    oldTask.isOpen = false;
+                    oldTask.text = params.text;
+                }
+                modifyTasks.push(oldTask)
+                return modifyTasks;
+            });
+
+            setLists({
+                ...lists,
+                [params.parentId]: {
+                    ...modifyList,
+                    tasks: modifyTasks
+                }
+            });
+            return;
+
+        }
+
+        if (!params.text) {
+            return;
+        }
+
         let list = lists[params.parentId];
         let newTask = { id: uuidv4(), text: params.text };
         list.tasks.push(newTask);
@@ -138,6 +185,10 @@ const Lists = props => {
             return;
         }
 
+        if (!params.text) {
+            return;
+        }
+
         setLists({
             ...lists,
             [uuidv4()]: {
@@ -161,6 +212,27 @@ const Lists = props => {
         });
     }
 
+    const handleDeleteTask = params => {
+        let modifyList = lists[params.parentId];
+        let modifyTasks = [];
+
+        modifyList.tasks.map(oldTask => {
+            if (oldTask.id !== params.taskId) {
+                modifyTasks.push(oldTask);
+            }
+            return modifyTasks;
+        });
+
+        let newLists = {
+            ...lists,
+            [params.parentId]: {
+                ...modifyList,
+                tasks: modifyTasks
+            }
+        };
+        setLists(newLists);
+    }
+
     const handleToggleListForm = listId => {
         let modifyList = lists[listId];
         setLists({
@@ -168,6 +240,27 @@ const Lists = props => {
             [listId]: {
                 ...modifyList,
                 isOpen: false
+            }
+        });
+    }
+
+    const handleToggleTaskForm = (listId, task) => {
+        let modifyList = lists[listId];
+        let modifyTasks = [];
+
+        modifyList.tasks.map(oldTask => {
+            if (oldTask.id === task.id) {
+                oldTask.isOpen = true;
+            }
+            modifyTasks.push(oldTask);
+            return modifyTasks;
+        });
+
+        setLists({
+            ...lists,
+            [listId]: {
+                ...modifyList,
+                tasks: modifyTasks
             }
         });
     }
@@ -197,18 +290,30 @@ const Lists = props => {
         );
     }
 
+    const showTask = (task, index, id) => {
+
+        if (task.isOpen) {
+            return showTaskForm(task, id);
+        }
+        return (
+            <Draggable draggableId={task.id} index={index} key={task.id}>
+                {(draggableProvided) => (
+                    <div {...draggableProvided.draggableProps} ref={draggableProvided.innerRef} {...draggableProvided.dragHandleProps} className="tasks" onClick={() => handleToggleTaskForm(id, task)}><span>{task.text}</span></div>
+                )}
+            </Draggable>
+        )
+    }
+
+    const showTaskForm = (task, id) => {
+        return <TaskForm modifyParent={(params) => handleNewTask(params)} deleteParent={(params) => handleDeleteTask(params)} parent={id} taskId={task.id} key={task.id} isOpen={true} text={task.text} />
+    }
+
     const showList = (id, list, droppableProvided) => {
         return (
             <div>
                 <h4 className="listTitle" onClick={() => handleToggleListForm(id)}>{list.title}</h4>
                 {list.tasks?.map((task, index) => {
-                    return (
-                        <Draggable draggableId={task.id} index={index} key={task.id}>
-                            {(draggableProvided) => (
-                                <div {...draggableProvided.draggableProps} ref={draggableProvided.innerRef} {...draggableProvided.dragHandleProps} className="tasks" ><span>{task.text}</span></div>
-                            )}
-                        </Draggable>
-                    );
+                    return showTask(task, index, id);
                 })}
                 {droppableProvided.placeholder}
                 <TaskForm modifyParent={(params) => handleNewTask(params)} parent={id} />

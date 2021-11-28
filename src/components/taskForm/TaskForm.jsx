@@ -7,13 +7,15 @@ const TaskForm = props => {
         text: props.text ? props.text : '',
         parentId: props.parent ? props.parent : '',
         isOpen: props.isOpen ? props.isOpen : false,
-        modifyParent: props.modifyParent
+        taskId: props.taskId ? props.taskId : "",
+        modifyParent: props.modifyParent,
+        deleteParent: props.deleteParent
     };
 
     const [params, setParams] = useState(initialParams);
 
     useEffect(() => {
-        //console.log(params);
+        // console.log(params);
     }, [params]);
 
     const handleToggleClick = () => {
@@ -24,6 +26,7 @@ const TaskForm = props => {
 
     const handleToggleClose = () => {
         setParams({ ...params, isOpen: !params.isOpen });
+        params.modifyParent(params);
     }
 
     const handleChange = event => {
@@ -37,15 +40,41 @@ const TaskForm = props => {
         }
     }
 
+    const handleDelete = event => {
+        handleToggleClose();
+        params.deleteParent(params);
+    }
+
+    const updateForm = (params) => {
+        return (
+            <div className="addTasksForm">
+                <textarea className="taskText" name="text" onChange={handleChange} value={params.text} ></textarea>
+                <div className="row justify-content-center">
+                    <button type='button' className="col-4 formButton" value='Actualizar' onClick={handleSubmit}>Actualizar</button>
+                    <button type='button' className="col-4 formButton delete" value='Eliminar' onClick={handleDelete}>Eliminar</button>
+                    <button type='button' className="col-4 formButton" value='Cerrar' onClick={handleToggleClose} >Cerrar</button>
+                </div>
+            </div>
+        )
+    }
+
+    const createForm = (params) => {
+        return (
+            <div className="addTasksForm">
+                <textarea className="taskText" name="text" onChange={handleChange} placeholder="Nueva Tarea..." ></textarea>
+                <div className="row justify-content-center">
+                    <button type='button' className="col-4 formButton" value='Crear' onClick={handleSubmit}>Crear</button>
+                    <button type='button' className="col-4 formButton" value='Cerrar' onClick={handleToggleClose} >Cerrar</button>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div>
             {params.isOpen ? (
-                <div className="addTasksForm">
-                    <textarea className="taskText" name="text" onChange={handleChange} placeholder="Nueva Tarea..." ></textarea>
-                    <div className="row justify-content-center">
-                        <button type='button' className="col-4 formButton" value='Crear' onClick={handleSubmit}>Crear</button>
-                        <button type='button' className="col-4 formButton" value='Cerrar' onClick={handleToggleClose} >Cerrar</button>
-                    </div>
+                <div>
+                    {params.taskId ? updateForm(params) : createForm(params)}
                 </div>
             ) : <div className="addTasks" onClick={handleToggleClick}>Añadir Tarea</div>}
         </div>
