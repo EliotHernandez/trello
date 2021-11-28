@@ -56,4 +56,8 @@
         transition: all 0.4s;
         cursor: pointer;
     }
+
+    .delete {
+        background-color: $darkWarn;
+    }
 }

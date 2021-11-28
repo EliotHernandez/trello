@@ -28,3 +28,9 @@
     transition: all 0.4s;
     cursor: grab;
 }
+
+.listTitle:hover {
+    color: $darkest;
+    text-decoration: underline;
+    cursor: pointer;
+}

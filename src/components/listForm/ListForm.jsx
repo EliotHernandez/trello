@@ -4,10 +4,12 @@ import './ListForm.scss';
 const ListForm = props => {
 
     let initialParams = {
-        text: props.text ? props.text : '',
+        text: props.title ? props.title : "",
         isOpen: props.isOpen ? props.isOpen : false,
         class: props.class ? props.class : "col-1",
-        modifyParent: props.modifyParent
+        listId: props.listId ? props.listId : "",
+        modifyParent: props.modifyParent,
+        deleteParent: props.deleteParent ? props.deleteParent : "",
     };
 
     const [params, setParams] = useState(initialParams);
@@ -32,30 +34,55 @@ const ListForm = props => {
             isOpen: !params.isOpen,
             class: "col-1"
         });
+        params.modifyParent(params);
     }
 
     const handleChange = event => {
         setParams({ ...params, [event.target.name]: event.target.value });
     }
 
-    const handleSubmit = event => {
+    const handleSubmit = () => {
         handleToggleClose();
-        if (params.text) {
-            params.modifyParent(params);
-        }
+        params.modifyParent(params);
+    }
+
+    const handleDelete = () => {
+        handleToggleClose();
+        params.deleteParent(params);
+    }
+
+    const updateForm = (params) => {
+        return (
+            <div className="addListForm">
+                <textarea className="listText" name="text" onChange={(event) => handleChange(event)} value={params.text} ></textarea>
+                <div className="row justify-content-center">
+                    <button type='button' className="col-3 formButton" value='Actualizar' onClick={() => handleSubmit()}>Actualizar</button>
+                    <button type='button' className="col-3 formButton delete" value='Eliminar' onClick={() => handleDelete()}>Eliminar</button>
+                    <button type='button' className="col-3 formButton" value='Cerrar' onClick={() => handleToggleClose()} >Cerrar</button>
+                </div>
+            </div>
+        );
+    }
+
+    const createForm = params => {
+        return (
+            <div className="addListForm">
+                <textarea className="listText" name="text" onChange={(event) => handleChange(event)} placeholder="Nueva lista..." ></textarea>
+                <div className="row justify-content-center">
+                    <button type='button' className="col-4 formButton" value='Crear' onClick={() => handleSubmit()}>Crear</button>
+                    <button type='button' className="col-4 formButton" value='Cerrar' onClick={() => handleToggleClose()} >Cerrar</button>
+                </div>
+            </div>
+        );
     }
 
     return (
         <div className={params.class}>
             {params.isOpen ? (
-                <div className="addListForm">
-                    <textarea className="listText" name="text" onChange={handleChange} placeholder="Nueva lista..." ></textarea>
-                    <div className="row justify-content-center">
-                        <button type='button' className="col-4 formButton" value='Crear' onClick={handleSubmit}>Crear</button>
-                        <button type='button' className="col-4 formButton" value='Cerrar' onClick={handleToggleClose} >Cerrar</button>
-                    </div>
+                <div>
+                    {params.listId ? updateForm(params) : createForm(params)}
                 </div>
-            ) : <div id="addList" className="list" onClick={handleToggleClick}>Añadir Lista</div>}
+            ) : <div id="addList" className="list" onClick={() => handleToggleClick()}>Añadir Lista</div>}
         </div>
     )
 }
